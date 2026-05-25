@@ -11,5 +11,8 @@
     "blockchain:node": "cd Blockchain && npx hardhat node",
     "blockchain:deploy": "cd Blockchain && npx hardhat run scripts/deploy.js --network localhost",
     "init:all": "cd backend && npm install && cd ../frontend && npm install"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.3"
   }
 }
