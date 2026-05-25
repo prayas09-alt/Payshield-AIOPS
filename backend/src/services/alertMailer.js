@@ -5,6 +5,10 @@
 
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+if (!process.env.JWT_SECRET) {
+  console.error("CRITICAL ERROR: JWT_SECRET environment variable is missing!");
+  process.exit(1); 
+}
 
 const smtpConfigured = Boolean(process.env.SMTP_USER && process.env.SMTP_PASS);
 const smtpFlag = (process.env.ENABLE_SMTP_ALERTS || "auto").toLowerCase();
@@ -33,10 +37,15 @@ if (transporter) {
   console.log("[Email] SMTP alerts disabled for demo runtime");
 }
 
+
 function generateDisputeToken(txId, userId) {
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET === "payshield-jwt") {
+    throw new Error("Security Violation: A strong, production-ready JWT_SECRET must be defined.");
+  }
+
   return jwt.sign(
     { txId, userId, action: "dispute" },
-    process.env.JWT_SECRET || "payshield-jwt",
+    process.env.JWT_SECRET,
     { expiresIn: "24h" }
   );
 }
